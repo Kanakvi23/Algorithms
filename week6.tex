@@ -1,0 +1,30 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{amsmath}
+
+\title{Assignment 6 - Binary Tree}
+\author{Kanakvi Aggarwal (15EC10068)}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+ \item \textbf{Reconstructing Binary tree}
+
+We reconstruct the binary tree using the preorder traversal and inorder traversal arrays entered by the user. We are able to do so because we know that in preorder array, leftmost element is the root of the tree whereas in inorder array all the elements to the left and right respectively form the left subtree and the right subtree.
+\newline 
+Therefore we traverse through the inorder array using a global variable. We search for the current element of inorder array in the preoder array. We repeat the same for the identified left and right subtree elements recursively.  
+
+\item \textbf{Indentifying all possible paths which sum to a single query "v"}
+
+We do a preorder traversal of the binary tree. For each node we check if there is a path possible which terminates at that node. This is done by maintaining an array which store the path from the root leading up to that node and an integer variable which stores the depth of the current node.    
+
+\item \textbf{Identifying all possible paths for multiple queries}
+
+This can be done using dynamic programming. First we will sort the entered sequence of sums in increasing order. For each value of sum we will use the paths that have already been identified for elements smaller than that.
+We will again do a preorder traversal of binary tree. We will store indentified paths for each value of sum in a 2D array. On traversing for a value, we will check if we have already indentified a path that terminates at that note. If so, we will check if that path can be elongated to total up to the current sum. if not, we will check if a new path is possible and store it.        
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,91 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{amsmath}
+
+\title{Report for Assignment 2}
+\author{Stuti Modi (15IE10029)}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Multiplication of two big integers using FFT and IFFT}
+\begin{enumerate}
+ \item \textbf{Implementing FFT/IFFT}
+
+FFT of a polynomial is found by evaluating the polynomial at $n^{th}$ roots of unity. We solve FFT recursively using divide and conquer by separating the odd and even coefficients, and obtain a time complexity of \emph{O(nlogn)}. We use Eulers formulas to compute the $n^{th}$ roots of unity. We can derive IFFT also in a similar way.
+
+\item \textbf{Generation Random Big Integers}
+
+Big integers are stored using data structures, dynamically allocated with random numbers.
+Each number is represented as complex number of the form \textbf{a + ib} implemented using structures
+A complex data structure is made which hold two contents: real part \emph{r} and imaginary part \emph{im}, both of which are of \emph{double} datatype.
+
+At the runtime, user is asked to input number of digits, for two numbers and the big integer array is created using \emph{create} and it is first allocated space and then it is populated with random numbers (0-9 only), while keeping in mind that Most Significant Digit should not be zero.
+
+\item \textbf{Multiplication algorithm}
+
+Let integer A and B be represented as
+\begin{equation}
+A = \sum_{k=0}^{k=n-1} a_{k}x^k
+\end{equation}
+and 
+\begin{equation}
+B = \sum_{k=0}^{k=n-1} b_{k}x^k
+\end{equation}
+
+Let applying FFT for order 2n yield the respective fourier transforms as F(A) and F(B) defined by
+
+\begin{equation}
+F(A) = [A_{0}, A_{1}, A_{2}, ..., A_{2n-1}]\end{equation} where \begin{equation}
+A_i = \sum_{k=0}^{k=2n-1} a_{k}w_{2n}^{ik}\end{equation}
+
+\begin{equation}
+F(B) = [B_{0}, B_{1}, B_{2}, ..., B_{2n-1}]\end{equation} where \begin{equation}
+B_i = \sum_{k=0}^{k=2n-1} b_{k}w_{2n}^{ik}\end{equation}
+
+where \begin{equation}
+w_{2n}^k = e^(\frac{2.pi.k}{2n}) \end{equation}
+
+\begin{equation}
+a_{k} = b_{k} = 0 for k > n-1 \end{equation}
+
+Let C be the product of A and B i.e. \textbf{C = AB}
+
+Then fourier transform of C is given by
+
+\begin{equation}
+F(C) = [C_{0}, C_{1}, C_{2}, ..., C_{2n-1}] \end{equation} where \begin{equation}
+C_i = A_i * B_i\end{equation}
+
+The integer C is therefore obtained by taking IFFT of F(C).
+
+\item \textbf{Time Complexity Calculation}
+
+In FFT, for each value of n, two recursive calls of length $\frac{n}{2}$ is performed and rest of combining operation is performed in linear time therefore
+
+ \begin{displaymath}   T(n) = \left\{
+     \begin{array}{lr}
+       a & : n = 1\\
+       2T(\frac{n}{2}) + bn +c & : n > 1
+     \end{array}
+   \right.
+\end{displaymath}
+
+Solving this equation by recursive method yields T(n) $\in \Theta (n.lg(n))$.
+
+In our code, we have gone one step further and for each value of n we call 3 recursive operations of length $\frac{n}{3}$ and the combining takes place in linear time.
+
+ \begin{displaymath}   T(n) = \left\{
+     \begin{array}{lr}
+       a & : n = 1\\
+       3T(\frac{n}{3}) + bn +c & : n > 1
+     \end{array}
+   \right.
+\end{displaymath}
+\end{enumerate}
+
+\end{document}
+Contact GitHub API Training Shop Blog About
+© 2017 GitHub, Inc. Terms Privacy Security Status Help

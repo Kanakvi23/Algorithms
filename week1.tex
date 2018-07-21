@@ -1,0 +1,110 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+%\input{commonDefs}
+\usepackage{tikz,tikz-3dplot}
+\usetikzlibrary{automata,arrows,calc,chains,fit,positioning,shapes,snakes}
+\usetikzlibrary{3d}
+
+\usepackage[siunitx]{circuitikz} % Loading circuitikz with siunitx option
+%\usepackage{tikz-qtree}
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm}
+\usetikzlibrary{intersections}
+
+\title{Report for assignment 1}
+\author{Kanakvi Aggarwal (15EC10068)}
+
+\def\onEq#1{\stackrel{#1}{=}}
+
+\def\QMatrix#1#2#3#4#5{%
+\begin{tikzpicture}
+  \draw[color=gray,very thin] (10pt,35pt) circle (10pt) node[color=black] {#1};
+  \draw[color=gray,very thin] (10pt,10pt) circle (10pt) node[color=black] {#2};
+  \draw[color=gray,very thin] (35pt,35pt) circle (10pt) node[color=black] {#2};
+  \draw (35pt, 10pt) node[color=black] {#3};
+  \draw[line width=#5] (35pt,10pt) circle (10pt);
+  \draw[rounded corners=10pt,line width=#5] (45pt, 0pt) -- (0pt, 0pt) -- (0pt,45pt) -- (45pt,45pt) --
+                              (45pt, 0pt) -- (0pt, 0pt) -- (0pt,10pt);
+  \node[anchor=west] at (45pt, 20pt) {#4};
+\end{tikzpicture}}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Fibonacci Numbers}
+
+\par Fibonacci sequence is a series of numbers in which the next number is found by adding the two previous numbers. In general, the first two numbers are assumed as $F_0$ = 0 and $F_1$ = 1. Thus, the sequence becomes 0,1,1,2,3,5,8,13,21,55..\linebreak
+$F_n=\left\{\begin{array}{ll}0&n=0\\1&n=1\\F_{n-1}+F_{n-2}&n>1\end{array}\right.$ 
+\\In the assignment, we have used two methods - Matrix Power and Reversed Odd-Even Reduction to calculate the Fibonacci number at the position entered by the user. 
+    
+\paragraph{Matrix Power Method}
+\begin{enumerate}
+ 
+ \item \textbf{Q connection to $F_n$}
+
+\QMatrix{$1$}{$1$}{$0$}%
+        {$\equiv\left(\begin{array}{cc}1&1\\1&0\end{array}\right)
+          \equiv\left(\begin{array}{cc}F_2&F_1\\F_1&F_0\end{array}\right)
+          \equiv Q
+         $}{.5mm}
+
+$Q^n\onEq{?}\left(\begin{array}{ll}F_{n+1}&F_n\\F_n&F_{n-1}\end{array}\right)$
+
+$Q^{n+1} = Q^n Q = 
+\left(\begin{array}{ll}F_{n+1}&F_n\\F_n&F_{n-1}\end{array}\right)
+\left(\begin{array}{cc}1&1\\1&0\end{array}\right) =
+\left(\begin{array}{ll}F_{n+1}+F_n&F_{n+1}\\F_n+F_{n-1}&F_n\end{array}\right)
+$
+
+Thus $F_n+1$ can be calculated using $Q^n$.
+
+ \item \textbf{Procedure}
+ \begin{itemize}
+ \item For computing $Q^k$ let $b_\ell, b_{\ell-1}, \ldots, b_0, b_\ell=1$ be the bit pattern for $k$
+ \item Thus $Q^k$ = $Q^{\sum\nolimits_{i} b_i2^i}$ = $\prod\limits_{i\neq0} Q^{2^i}$
+ \item Now, $Q^{2^i} = Q^{2^{(i-1)}.2} = (Q^{2^{(i-1)}})^2$
+ \item Thus, starting with P = I (identity matrix) and T = Q, intermediate terms are computed by repeatedly squaring T and multiplying with P if $b_i \neq 0$
+ \item Time complexity: done in $(\lg n)$ steps, upto sixteen multiplications and eighteen additions in one step; $O(\lg n)$.
+ \end{itemize}
+
+\end{enumerate}
+
+\paragraph{Reversed Odd-Even Reduction Method}
+\begin{enumerate}
+
+\item\textbf{The formula}
+\[\begin{array}{ll}
+          F_{2k} &= F_k \left[ 2F_{k+1} - F_k \right] \\
+          F_{2k+1} &= F_{k+1}^2 + F_k^2
+      \end{array}\]
+\begin{itemize}
+\item The above formulae can be proved using equation\\
+      $Q^n= \left(\begin{array}{ll}F_{n+1}&F_n\\F_n&F_{n-1}\end{array}\right)$
+\item Taking determinants on both the sides, $(-1)^n = F_{n+1}*F_n -        F_n^2$  
+\item Using $A^mA^n = A^{m+n}$, we get $F_mF_n + F_{m-1}F_{n-1} =          F_{m+n-1}$
+\item Putting n = n+1, $F_mF_{n+1} = + F_{m-1}F_{n} = F_{m+n}$
+\item Now for m=n, $F_{2n-1} = F^2_{n} + F^2_{n-1}$ and therefore, $F_{2n+1} = F^2_{n+1} + F^2_{n}$ 
+\item Also, $F_{2n} = (F_{n-1} + F_{n+1})F_n$ and therefore, $F_{2n} = (2*F_{n-1} + F_{n})F_n$
+
+\end{itemize}
+
+\item\textbf{Procedure}
+\begin{itemize}
+\item Let $F_k$ and $F_{k+1}$ be known
+      -- for $k=1$ we can compute $F_2=F+1+F_0$
+\item Compute $F_{2k}$ and $F_{2k+1}$,
+      if necessary compute $F_{2k+2}=F_{2k}+F_{2k+1}$
+\item Suppose we want to compute $F_n$,
+      let $b_\ell, b_{\ell-1}, \ldots, b_0, b_\ell=1$ be the bit pattern for $n$
+\item Build $n$ stepwise as $n_1=b_\ell$,
+      $n_j=2n_{j-1}+b_{\ell-j+1}$ and $n=n_{\ell-1}$
+\item Accordingly, from $F_{n_{j-1}}$ and $F_{n_{j-1}+1}$, compute
+      $F_{2n_{j-1}}$ and $F_{2n_{j-1}+1}$ and proceed
+\item If $b_{\ell-j+1}=1$, compute                                         $F_{2n_{j-1}+2}=F_{2n_{j-1}+1}+F_{2n_{j-1}}$
+      and proceed with $F_{2n_{j-1}+2}$ and $F_{2n_{j-1}+1}$
+\item Time complexity: $\lg n$ steps, up to two multiplications and        three additions in each step; $O(\lg n)$, but more efficient         than the matrix power method
+\end{itemize}
+\end{enumerate}
+\end{document}

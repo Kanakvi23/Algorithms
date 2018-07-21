@@ -1,0 +1,57 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{amsmath}
+
+\title{Report for Assignment 4}
+\author{Kanakvi Aggarwal (15EC10068)}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Multiplication of two polynomials using FFT and IFFT}
+\begin{enumerate}
+ \item \textbf{Introduction}
+
+Multiplication of a polynomial by the simplest method of multiplying each coefficient of the first polynomial to all the coffecients of the second polynomial gives a time complexity of $O(n^2)$.
+The algorithm involving Fast Fourier Transform (FFT) and Inverse Fast Fourier Transform (IFFT) used in this program reduces the time complexity to $O(n.logn)$.\\
+We solve FFT and IFFT recursively using divide and conquer by separating the odd and even coefficients.
+\begin{displaymath} 
+    FFT - X(m) = sum_{n=0}^{N-1} x(n)e^{\frac{-j2\pi nm}{N}}
+\end{displaymath}
+\begin{displaymath} 
+    IFFT - X(m) = \frac{1}{N} sum_{n=0}^{N-1} x(n)e^{\frac{j2\pi nm}{N}}
+\end{displaymath}
+
+ \item \textbf{Flow of the program}
+\begin{itemize}
+\item First we input the degree of the polynomials $(m=(2^d)-1, say 7)$ from the user and then the coefficients of the two polynomials A and B.
+\item We increase the length of the arrays of coeficients to $n=2*(m+1)$, i.e., 16 and insert zero in the new terms added.
+\item Next we apply FFT to coffecient array of both A and B polynomial and store the results in arrays FA and FB respectively. 
+\item Next we evaluate FC by multiplying the corresponding terms in arrays FA and FB, i.e., $sum_{k=0}^{k=m-1} FC[k]=FA[k]*FB[k].$
+\item Lastly, we apply inverse FFT to FC to obtain the required coeffcients. 
+ \end{itemize}
+\item \textbf{Time Complexity Calculation}
+
+For each value of n, the FFT function is called twice recursively for length $\frac{n}{2}$ array containing odd and even terms respectively.The rest of combining operation is performed in linear time therefore
+
+ \begin{displaymath}   T(n) = \left\{
+     \begin{array}{lr}
+       a & : n = 1\\
+       2T(\frac{n}{2}) + bn +c & : n > 1
+     \end{array}
+   \right.
+\end{displaymath}
+
+Solving this equation by recursive method yields T(n) $O (n.log(n))$.
+
+Similarly, IFFT also gives $O(n.log(n))$. 
+
+The calculation of FC array by multiplication of corresponding terms of FA and FB arrays takes linear time, i.e., $O(n)$.
+
+Therefore, the time complexity of the programs comes out to be $O(n.log(n))$.
+
+\end{enumerate}
+
+\end{document}
